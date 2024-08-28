@@ -15,6 +15,6 @@ app.get("/tasks", async (req, res) => {
 	res.json(tasks);
 });
 
-app.listen(3000, () => {
+app.listen(7777, () => {
 	console.log("Server is running on http://localhost:3000");
 });
