@@ -1,0 +1,63 @@
+name: Deploy Backend and Frontend to VM
+
+on:
+  push:
+    branches:
+      - main # Ajuste para a branch que você deseja monitorar
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy Backend
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./backend/*"
+          target: "/home/vlosada/first.e-pitinglish/backend/"
+
+      - name: Deploy Frontend
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./frontend/*"
+          target: "/home/vlosada/first.e-pitinglish/todo-list/"
+
+      - name: Install and Build Backend
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/vlosada/first.e-pitinglish/backend
+            npm install
+            npm run build
+
+      - name: Install and Build Frontend
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/vlosada/first.e-pitinglish/todo-list
+            npm install
+            npm run build
+
+      - name: Restart Backend and Frontend
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            pm2 restart all  # Reinicia ambos backend e frontend se estiverem sendo gerenciados pelo PM2
