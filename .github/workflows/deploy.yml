@@ -19,7 +19,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "./backend/*"
+          source: "./backend/"
           target: "/home/vlosada/first.e-pitinglish/backend/"
           rm: true # Remove arquivos antigos antes de copiar os novos
 
@@ -29,7 +29,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "./todo-list/*"
+          source: "./todo-list/"
           target: "/home/vlosada/first.e-pitinglish/todo-list/"
           rm: true # Remove arquivos antigos antes de copiar os novos
 
