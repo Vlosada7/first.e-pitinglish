@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // Vamos adicionar estilos específicos para essa página
+import "./Login.css";
 
 const Login: React.FC = () => {
 	const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
 	};
 
 	const handleRegisterRedirect = () => {
-		navigate("/register"); // Redireciona para a página de registro
+		navigate("/register");
 	};
 	return (
 		<div className="login-container">

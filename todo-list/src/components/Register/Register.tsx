@@ -6,7 +6,7 @@ const Register: React.FC = () => {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState(""); // Novo estado para confirmar senha
+	const [confirmPassword, setConfirmPassword] = useState(""); 
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleRegister = (e: React.FormEvent) => {
@@ -20,9 +20,8 @@ const Register: React.FC = () => {
 
 		setErrorMessage("");
 
-		// Aqui você pode adicionar a lógica para o registro do usuário
+		// Lógica para o registro do usuário
 		console.log("Registrando:", { firstName, lastName, email, password });
-		// Redirecionar ou mostrar mensagem de sucesso conforme necessário
 	};
 
 	return (
