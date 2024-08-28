@@ -21,6 +21,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "./backend/*"
           target: "/home/vlosada/first.e-pitinglish/backend/"
+          rm: true # Remove arquivos antigos antes de copiar os novos
 
       - name: Deploy Frontend
         uses: appleboy/scp-action@master
@@ -30,6 +31,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "./todo-list/*"
           target: "/home/vlosada/first.e-pitinglish/todo-list/"
+          rm: true # Remove arquivos antigos antes de copiar os novos
 
       - name: Install and Build Backend
         uses: appleboy/ssh-action@master
@@ -41,6 +43,7 @@ jobs:
             cd /home/vlosada/first.e-pitinglish/backend
             npm install
             npm run build
+            echo "Backend built successfully."
 
       - name: Install and Build Frontend
         uses: appleboy/ssh-action@master
@@ -52,6 +55,7 @@ jobs:
             cd /home/vlosada/first.e-pitinglish/todo-list
             npm install
             npm run build
+            echo "Frontend built successfully."
 
       - name: Restart Backend and Frontend
         uses: appleboy/ssh-action@master
@@ -60,5 +64,26 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            pm2 restart backend || pm2 start dist/index.js --name "backend" --watch
+            pm2 restart backend || pm2 start /home/vlosada/first.e-pitinglish/backend/dist/index.js --name "backend" --watch
             pm2 restart frontend || pm2 start npm --name "frontend" -- run start --prefix /home/vlosada/first.e-pitinglish/todo-list
+            pm2 save  # Salva o estado do PM2 para garantir que os processos sejam reiniciados corretamente
+            echo "Backend and Frontend restarted successfully."
+
+      - name: Verify Files on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            ls -l /home/vlosada/first.e-pitinglish/backend/
+            ls -l /home/vlosada/first.e-pitinglish/todo-list/
+
+      - name: Check PM2 Status
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            pm2 status
