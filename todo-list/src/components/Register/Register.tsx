@@ -26,18 +26,18 @@ const Register: React.FC = () => {
 
 	return (
 		<div className="register-container">
-			<h2>Cadastro</h2>
+			<h2>Registro</h2>
 			<form onSubmit={handleRegister}>
 				<input
 					type="text"
-					placeholder="Nome"
+					placeholder="Nombre"
 					value={firstName}
 					onChange={(e) => setFirstName(e.target.value)}
 					required
 				/>
 				<input
 					type="text"
-					placeholder="Sobrenome"
+					placeholder="Apellido"
 					value={lastName}
 					onChange={(e) => setLastName(e.target.value)}
 					required
@@ -51,20 +51,20 @@ const Register: React.FC = () => {
 				/>
 				<input
 					type="password"
-					placeholder="Senha"
+					placeholder="Contraseña"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
 				<input
 					type="password"
-					placeholder="Confirmar Senha"
+					placeholder="Confirmar Contraseña"
 					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					required
 				/>
 				{errorMessage && <p className="error-message">{errorMessage}</p>}
-				<button type="submit">Cadastrar</button>
+				<button type="submit">Registrar</button>
 			</form>
 		</div>
 	);

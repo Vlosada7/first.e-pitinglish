@@ -24,7 +24,7 @@ const Login: React.FC = () => {
 	return (
 		<div className="login-container">
 			<h1>ToDo List</h1>
-			<p>Organize suas tarefas diárias de maneira simples e eficiente.</p>
+			<p>Organiza tus tareas diarias de una forma sencilla y eficaz.</p>
 
 			<form className="login-form" onSubmit={handleLogin}>
 				<input
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
 				{error && <p className="error">{error}</p>}
 
 				<button type="submit" className="login-button">
-					Entrar
+					Login
 				</button>
 
 				<button
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
 					className="register-button"
 					onClick={handleRegisterRedirect}
 				>
-					Cadastre-se
+					Registro
 				</button>
 			</form>
 		</div>
