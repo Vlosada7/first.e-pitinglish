@@ -10,7 +10,7 @@
 		"build": "npm run build:backend && npm run build:frontend",
 		"start:backend": "npm run start --prefix backend",
 		"start:frontend": "npm run start --prefix todo-list",
-		"start": "npm run start:backend & npm run start:todo-list"
+		"start": "npm run start:backend & npm run start:frontend"
 	},
 	"keywords": [],
 	"author": "",
