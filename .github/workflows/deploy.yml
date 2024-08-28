@@ -28,7 +28,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "./frontend/*"
+          source: "./todo-list/*"
           target: "/home/vlosada/first.e-pitinglish/todo-list/"
 
       - name: Install and Build Backend
