@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
+import { createTask } from "../../api/tasks/createTask";
 
 interface Task {
 	title: string;
 	description: string;
 	datetime: string;
 	completed: boolean;
+	userId: number;
 }
 
 const Home: React.FC = () => {
@@ -14,11 +16,26 @@ const Home: React.FC = () => {
 	const [datetime, setDatetime] = useState("");
 	const [tasks, setTasks] = useState<Task[]>([]);
 
-	const handleAddTask = (e: React.FormEvent) => {
+	const username = localStorage.getItem("username");
+	const userId = localStorage.getItem("userId");
+	const token = localStorage.getItem("authToken");
+
+	// Logica para adicionar
+	const handleAddTask = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (title && datetime) {
-			const newTask: Task = { title, description, datetime, completed: false };
+		if (title && datetime && token) {
+			const formattedDatetime = new Date(datetime).toISOString();
+			const newTask: Task = {
+				title,
+				description,
+				datetime: formattedDatetime,
+				userId: Number(userId),
+				completed: false,
+			};
+			const response = await createTask(token, newTask);
+			console.log(newTask);
+
 			setTasks(
 				[...tasks, newTask].sort(
 					(a, b) =>
@@ -31,6 +48,9 @@ const Home: React.FC = () => {
 		}
 	};
 
+	//Logica para pegar as tasks
+
+	//Adicionar logica para update
 	const handleToggleComplete = (index: number) => {
 		const updatedTasks = tasks.map((task, i) =>
 			i === index ? { ...task, completed: !task.completed } : task
@@ -38,6 +58,7 @@ const Home: React.FC = () => {
 		setTasks(updatedTasks);
 	};
 
+	//Logica para deletar as tasks
 	const handleDeleteTask = (index: number) => {
 		const updatedTasks = tasks.filter((_, i) => i !== index);
 		setTasks(updatedTasks);
@@ -46,6 +67,7 @@ const Home: React.FC = () => {
 	return (
 		<div className="home-container">
 			<div className="task-form">
+				<h2>Bienvenido {username}</h2>
 				<h2>Agregar nueva tarea</h2>
 				<form onSubmit={handleAddTask}>
 					<input
