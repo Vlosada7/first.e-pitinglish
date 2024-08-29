@@ -8,11 +8,21 @@ export const register = async (
 	email: string,
 	password: string
 ) => {
-	const response = await axios.post(`${API_URL}/register`, {
-		firstName,
-		lastName,
-		email,
-		password,
-	});
-	return response.data;
+	try {
+		const response = await axios.post(`${API_URL}/register`, {
+			firstName,
+			lastName,
+			email,
+			password,
+		});
+
+		if (!response.status) {
+			throw new Error("Erro ao registrar usuário");
+		}
+
+		return response.data;
+	} catch (error) {
+		console.error("Erro:", error);
+		throw error; // Rethrow para ser tratado na interface do usuário se necessário
+	}
 };
