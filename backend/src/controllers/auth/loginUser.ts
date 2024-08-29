@@ -23,11 +23,11 @@ export const loginUser = async (req: Request, res: Response) => {
 			return res.status(401).json({ message: "Invalid email or password" });
 		}
 
-		const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
+		const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
 			expiresIn: "1h",
 		});
 
-		return res.json({ message: "Login successful", token });
+		return res.json({ message: "Login successful", token, user });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal server error" });
 	}

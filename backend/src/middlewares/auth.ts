@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 interface AuthenticatedRequest extends Request {
-	userId?: number; // Corrige o tipo para `number`
+	userId?: number; // Certifique-se de que o tipo é `number`
 }
 
 export const authenticateToken = (
@@ -21,9 +21,9 @@ export const authenticateToken = (
 
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
-			userId: number; // Certifique-se de que o `userId` seja um número
+			userId: number;
 		};
-		req.userId = decoded.userId; // Define o `userId` como número
+		req.userId = decoded.userId;
 		next();
 	} catch (error) {
 		return res.status(403).json({ message: "Token inválido" });
