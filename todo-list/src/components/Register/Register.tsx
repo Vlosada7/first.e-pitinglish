@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { register } from "../../api/auth/register";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
 const Register: React.FC = () => {
@@ -6,10 +8,11 @@ const Register: React.FC = () => {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState(""); // Novo estado para confirmar senha
+	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const navigate = useNavigate();
 
-	const handleRegister = (e: React.FormEvent) => {
+	const handleRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		// Verificar se as senhas coincidem
@@ -20,25 +23,36 @@ const Register: React.FC = () => {
 
 		setErrorMessage("");
 
-		// Aqui você pode adicionar a lógica para o registro do usuário
-		console.log("Registrando:", { firstName, lastName, email, password });
-		// Redirecionar ou mostrar mensagem de sucesso conforme necessário
+		// Lógica para o registro do usuário
+		try {
+			const response = await register(firstName, lastName, email, password);
+			if (response.status === 400) {
+				setErrorMessage(response.message);
+			} else if (response.status === 500) {
+				setErrorMessage(response.message);
+			} else {
+				alert("Registrado con succeso");
+				navigate("/");
+			}
+		} catch (error) {
+			setErrorMessage("Error interno del server");
+		}
 	};
 
 	return (
 		<div className="register-container">
-			<h2>Cadastro</h2>
+			<h2>Registro</h2>
 			<form onSubmit={handleRegister}>
 				<input
 					type="text"
-					placeholder="Nome"
+					placeholder="Nombre"
 					value={firstName}
 					onChange={(e) => setFirstName(e.target.value)}
 					required
 				/>
 				<input
 					type="text"
-					placeholder="Sobrenome"
+					placeholder="Apellido"
 					value={lastName}
 					onChange={(e) => setLastName(e.target.value)}
 					required
@@ -52,20 +66,20 @@ const Register: React.FC = () => {
 				/>
 				<input
 					type="password"
-					placeholder="Senha"
+					placeholder="Contraseña"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
 				<input
 					type="password"
-					placeholder="Confirmar Senha"
+					placeholder="Confirmar Contraseña"
 					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					required
 				/>
 				{errorMessage && <p className="error-message">{errorMessage}</p>}
-				<button type="submit">Cadastrar</button>
+				<button type="submit">Registrar</button>
 			</form>
 		</div>
 	);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // Vamos adicionar estilos específicos para essa página
+import { login } from "../../api/auth/login";
+import "./Login.css";
 
 const Login: React.FC = () => {
 	const [email, setEmail] = useState("");
@@ -8,8 +9,17 @@ const Login: React.FC = () => {
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
 
-	const handleLogin = (e: React.FormEvent) => {
+	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		try {
+			const response = await login(email, password);
+			console.log(response);
+			localStorage.setItem("authToken", response.token);
+			navigate("/home");
+		} catch (error) {
+			setError("Email ou senha inválidos!");
+		}
 
 		if (email === "teste@teste.com" && password === "123123") {
 			navigate("/home");
@@ -19,12 +29,12 @@ const Login: React.FC = () => {
 	};
 
 	const handleRegisterRedirect = () => {
-		navigate("/register"); // Redireciona para a página de registro
+		navigate("/register");
 	};
 	return (
 		<div className="login-container">
 			<h1>ToDo List</h1>
-			<p>Organize suas tarefas diárias de maneira simples e eficiente.</p>
+			<p>Organiza tus tareas diarias de una forma sencilla y eficaz.</p>
 
 			<form className="login-form" onSubmit={handleLogin}>
 				<input
@@ -45,7 +55,7 @@ const Login: React.FC = () => {
 				{error && <p className="error">{error}</p>}
 
 				<button type="submit" className="login-button">
-					Entrar
+					Login
 				</button>
 
 				<button
@@ -53,7 +63,7 @@ const Login: React.FC = () => {
 					className="register-button"
 					onClick={handleRegisterRedirect}
 				>
-					Cadastre-se
+					Registro
 				</button>
 			</form>
 		</div>

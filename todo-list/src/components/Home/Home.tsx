@@ -46,7 +46,7 @@ const Home: React.FC = () => {
 	return (
 		<div className="home-container">
 			<div className="task-form">
-				<h2>Adicionar Nova Tarefa</h2>
+				<h2>Agregar nueva tarea</h2>
 				<form onSubmit={handleAddTask}>
 					<input
 						type="text"
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
 					/>
 					<input
 						type="text"
-						placeholder="Descrição (opcional)"
+						placeholder="Descripción (opcional)"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
@@ -67,11 +67,11 @@ const Home: React.FC = () => {
 						onChange={(e) => setDatetime(e.target.value)}
 						required
 					/>
-					<button type="submit">Adicionar</button>
+					<button type="submit">Agregar</button>
 				</form>
 			</div>
 			<div className="task-list">
-				<h2>Tarefas</h2>
+				<h2>Tareas</h2>
 				{tasks.length > 0 ? (
 					<ul>
 						{tasks.map((task, index) => (
@@ -89,7 +89,7 @@ const Home: React.FC = () => {
 						))}
 					</ul>
 				) : (
-					<p>Nenhuma tarefa adicionada.</p>
+					<p>No se agregaron tareas.</p>
 				)}
 			</div>
 		</div>
