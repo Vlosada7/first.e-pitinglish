@@ -2,35 +2,61 @@ import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { createTask } from "../../api/tasks/createTask";
 import { getTasks } from "../../api/tasks/getTasks";
+import { updateTask } from "../../api/tasks/updateTask";
+import { deleteTask } from "../../api/tasks/deleteTask";
 
 interface Task {
+	id: number;
 	title: string;
 	description: string;
-	datetime: string;
+	dueDate: string;
 	completed: boolean;
 	userId: number;
 }
+
+// Função para formatar a data
+const formatDatetime = (datetime: string | undefined) => {
+	if (!datetime) {
+		return "Data não disponível";
+	}
+
+	const date = new Date(datetime);
+
+	if (isNaN(date.getTime())) {
+		return "Data inválida";
+	}
+
+	const day = String(date.getDate()).padStart(2, "0");
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const year = date.getFullYear();
+	const hours = String(date.getHours()).padStart(2, "0");
+	const minutes = String(date.getMinutes()).padStart(2, "0");
+
+	return `${day}/${month}/${year} - ${hours}:${minutes}`;
+};
+
+// Teste a função com uma data ISO fixa
+console.log(formatDatetime("2024-12-12T12:12:00Z"));
 
 const Home: React.FC = () => {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [datetime, setDatetime] = useState("");
 	const [tasks, setTasks] = useState<Task[]>([]);
-
-	const username = localStorage.getItem("username");
 	const userId = localStorage.getItem("userId");
 	const token = localStorage.getItem("authToken");
 
-	// Logica para adicionar
+	// Lógica para adicionar
 	const handleAddTask = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (title && datetime && token) {
 			const formattedDatetime = new Date(datetime).toISOString();
 			const newTask: Task = {
+				id: 0, // O ID real será atribuído pelo backend
 				title,
 				description,
-				datetime: formattedDatetime,
+				dueDate: formattedDatetime,
 				userId: Number(userId),
 				completed: false,
 			};
@@ -39,7 +65,7 @@ const Home: React.FC = () => {
 			setTasks(
 				[...tasks, newTask].sort(
 					(a, b) =>
-						new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
+						new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
 				)
 			);
 			setTitle("");
@@ -48,40 +74,60 @@ const Home: React.FC = () => {
 		}
 	};
 
-	//Logica para pegar as tasks
+	// Lógica para pegar as tasks
 	useEffect(() => {
 		const userTasks = async () => {
 			try {
 				if (token && userId) {
 					const response = await getTasks(token, userId);
-					console.log(response.tasks);
 					setTasks(response.tasks);
+					console.log(response.tasks);
 				}
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		userTasks();
-	}, []);
+	}, [token, userId]);
 
-	//Adicionar logica para update
-	const handleToggleComplete = (index: number) => {
-		const updatedTasks = tasks.map((task, i) =>
-			i === index ? { ...task, completed: !task.completed } : task
-		);
-		setTasks(updatedTasks);
+	// Lógica para atualizar (toggle `completed`)
+	const handleToggleComplete = async (task: Task) => {
+		try {
+			if (token && userId) {
+				const updatedTask = await updateTask(token, {
+					taskId: task.id,
+					userId: Number(userId),
+				});
+
+				// Atualize a lista de tarefas localmente
+				const updatedTasks = tasks.map((t) =>
+					t.id === task.id ? { ...t, completed: updatedTask.isCompleted } : t
+				);
+				setTasks(updatedTasks);
+			}
+		} catch (error) {
+			console.error("Erro ao atualizar tarefa:", error);
+		}
 	};
 
-	//Logica para deletar as tasks
-	const handleDeleteTask = (index: number) => {
-		const updatedTasks = tasks.filter((_, i) => i !== index);
-		setTasks(updatedTasks);
+	// Lógica para deletar as tasks (ainda não implementada no backend)
+	const handleDeleteTask = async (taskId: number) => {
+		try {
+			if (token && userId) {
+				await deleteTask(token, userId, taskId.toString()); // Chama a API deleteTask
+
+				// Remove a tarefa deletada do estado local
+				const updatedTasks = tasks.filter((task) => task.id !== taskId);
+				setTasks(updatedTasks);
+			}
+		} catch (error) {
+			console.error("Erro ao deletar tarefa:", error);
+		}
 	};
 
 	return (
 		<div className="home-container">
 			<div className="task-form">
-				<h2>Bienvenido {username}</h2>
 				<h2>Agregar nueva tarea</h2>
 				<form onSubmit={handleAddTask}>
 					<input
@@ -115,12 +161,14 @@ const Home: React.FC = () => {
 								<input
 									type="checkbox"
 									checked={task.completed}
-									onChange={() => handleToggleComplete(index)}
+									onChange={() => handleToggleComplete(task)}
 								/>
 								<h3>{task.title}</h3>
 								<p>{task.description}</p>
-								<time>{task.datetime}</time>
-								<button onClick={() => handleDeleteTask(index)}>Excluir</button>
+								<time>{formatDatetime(task.dueDate)}</time>
+								<button onClick={() => handleDeleteTask(task.id)}>
+									Excluir
+								</button>
 							</li>
 						))}
 					</ul>
