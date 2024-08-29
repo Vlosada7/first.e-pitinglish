@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { createTask } from "../../api/tasks/createTask";
+import { getTasks } from "../../api/tasks/getTasks";
 
 interface Task {
 	title: string;
@@ -33,8 +34,7 @@ const Home: React.FC = () => {
 				userId: Number(userId),
 				completed: false,
 			};
-			const response = await createTask(token, newTask);
-			console.log(newTask);
+			await createTask(token, newTask);
 
 			setTasks(
 				[...tasks, newTask].sort(
@@ -49,6 +49,20 @@ const Home: React.FC = () => {
 	};
 
 	//Logica para pegar as tasks
+	useEffect(() => {
+		const userTasks = async () => {
+			try {
+				if (token && userId) {
+					const response = await getTasks(token, userId);
+					console.log(response.tasks);
+					setTasks(response.tasks);
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		userTasks();
+	}, []);
 
 	//Adicionar logica para update
 	const handleToggleComplete = (index: number) => {
