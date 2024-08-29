@@ -75,7 +75,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            pm2 restart backend || pm2 start /home/vlosada/first.e-pitinglish/backend/dist/index.js --name "backend" --watch
+            pm2 restart backend || pm2 start /home/vlosada/first.e-pitinglish/backend/dist/src/index.js --name "backend" --watch
             pm2 restart frontend || pm2 start npm --name "frontend" -- run start --prefix /home/vlosada/first.e-pitinglish/todo-list
             pm2 save  # Salva o estado do PM2 para garantir que os processos sejam reiniciados corretamente
             echo "Backend and Frontend restarted successfully."
