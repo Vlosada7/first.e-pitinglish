@@ -41,6 +41,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/vlosada/first.e-pitinglish/backend
+            rm -rf dist # Limpa o diretório dist antes de buildar
             npm install
             npm run build
             echo "Backend built successfully."
@@ -87,3 +88,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             pm2 status
+
+      - name: Verify Backend Build Files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            ls -l /home/vlosada/first.e-pitinglish/backend/dist/
