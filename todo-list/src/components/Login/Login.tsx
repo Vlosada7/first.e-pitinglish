@@ -19,11 +19,13 @@ const Login: React.FC = () => {
 			const response = await login(email, password);
 			console.log(response);
 			localStorage.setItem("authToken", response.token);
+			localStorage.setItem("username", response.user.firstName);
+			localStorage.setItem("userId", response.user.id);
 			navigate("/home");
 		} catch (error) {
 			setError("Email ou senha inválidos!");
 		} finally {
-			setLoading(false); // Termina o carregamento
+			setLoading(false);
 		}
 	};
 
