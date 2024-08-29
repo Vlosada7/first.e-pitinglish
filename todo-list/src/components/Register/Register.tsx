@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { register } from "../../api/auth/register";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
 const Register: React.FC = () => {
@@ -6,10 +8,11 @@ const Register: React.FC = () => {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState(""); 
+	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const navigate = useNavigate();
 
-	const handleRegister = (e: React.FormEvent) => {
+	const handleRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		// Verificar se as senhas coincidem
@@ -21,7 +24,19 @@ const Register: React.FC = () => {
 		setErrorMessage("");
 
 		// Lógica para o registro do usuário
-		console.log("Registrando:", { firstName, lastName, email, password });
+		try {
+			const response = await register(firstName, lastName, email, password);
+			if (response.status === 400) {
+				setErrorMessage(response.message);
+			} else if (response.status === 500) {
+				setErrorMessage(response.message);
+			} else {
+				alert("Registrado con succeso");
+				navigate("/");
+			}
+		} catch (error) {
+			setErrorMessage("Error interno del server");
+		}
 	};
 
 	return (

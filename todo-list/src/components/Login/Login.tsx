@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../../api/auth/login";
 import "./Login.css";
 
 const Login: React.FC = () => {
@@ -8,8 +9,17 @@ const Login: React.FC = () => {
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
 
-	const handleLogin = (e: React.FormEvent) => {
+	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		try {
+			const response = await login(email, password);
+			console.log(response);
+			localStorage.setItem("authToken", response.token);
+			navigate("/home");
+		} catch (error) {
+			setError("Email ou senha inválidos!");
+		}
 
 		if (email === "teste@teste.com" && password === "123123") {
 			navigate("/home");
