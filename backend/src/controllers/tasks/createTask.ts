@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 
 export const createTask = async (req: Request, res: Response) => {
 	const { title, description, datetime: dueDate, userId } = req.body;
-	const authHeader = req.headers["authorization"];
-	const token = authHeader && authHeader.split(" ")[1]; // Extrai o token
 
 	try {
 		if (!userId) {
