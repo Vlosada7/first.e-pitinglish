@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { createTask } from "../../api/tasks/createTask";
 import { getTasks } from "../../api/tasks/getTasks";
@@ -46,6 +47,7 @@ const Home: React.FC = () => {
 	const [loadingCreateTask, setLoadingCreateTask] = useState(false);
 	const [loadingTasks, setLoadingTasks] = useState<boolean[]>([]);
 	const [error, setError] = useState("");
+	const navigate = useNavigate();
 
 	// Lógica para adicionar
 	const handleAddTask = async (e: React.FormEvent) => {
@@ -55,18 +57,18 @@ const Home: React.FC = () => {
 		if (title && datetime && token) {
 			try {
 				const formattedDatetime = new Date(datetime).toISOString();
-				const newTask: Task = {
-					id: 0, // O ID real será atribuído pelo backend
+
+				const newTask: Partial<Task> = {
 					title,
 					description,
 					dueDate: formattedDatetime,
 					userId: Number(userId),
 					isCompleted: false,
 				};
-				await createTask(token, newTask);
+				const createdTask = await createTask(token, newTask);
 
 				setTasks(
-					[...tasks, newTask].sort(
+					[...tasks, createdTask].sort(
 						(a, b) =>
 							new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
 					)
@@ -144,6 +146,13 @@ const Home: React.FC = () => {
 		} catch (error) {
 			console.error("Erro ao deletar tarefa:", error);
 		}
+	};
+
+	// Lógica para logout
+	const handleLogout = () => {
+		localStorage.removeItem("authToken");
+		localStorage.removeItem("userId");
+		navigate("/"); // Redireciona para a página de login
 	};
 
 	// Filtra as tarefas pendentes e concluídas
@@ -250,6 +259,11 @@ const Home: React.FC = () => {
 				) : (
 					<p>No se agregaron tareas.</p>
 				)}
+			</div>
+			<div className="logout-container">
+				<button onClick={handleLogout} className="logout-button">
+					Logout
+				</button>
 			</div>
 		</div>
 	);
