@@ -58,3 +58,5 @@ steps:
           ls -l /home/vlosada/first.e-pitinglish/backend/dist/ &&
           ls -l /home/vlosada/first.e-pitinglish/todo-list/build/
         '
+serviceAccount: "cloud-build-sa@bubbly-fuze-433816-t3.iam.gserviceaccount.com"
+logsBucket: "gs://build_logs_bucket_v7"
