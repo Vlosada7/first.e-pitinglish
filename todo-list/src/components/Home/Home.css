@@ -120,3 +120,26 @@
 .logout-button:hover {
   background-color: #ff4b4b;
 }
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.task-info {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-item.completed {
+  background-color: #e0ffe0;
+  /* Cor para tarefas completadas */
+}
