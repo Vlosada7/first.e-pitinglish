@@ -5,18 +5,18 @@ steps:
       - '-c'
       - |
         gcloud compute ssh vlosada@instance-20240828-140606 --zone=us-central1-b --command 'rm -rf /home/vlosada/first.e-pitinglish/backend/*'
-  - name: 'gcr.io/cloud-builders/scp'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      - '-r'
-      - './backend/*'
-      - 'vlosada@instance-20240828-140606:/home/vlosada/first.e-pitinglish/backend/'
-      - '--zone=us-central1-b'
-  - name: 'gcr.io/cloud-builders/scp'
+      - '-c'
+      - |
+        gcloud compute scp --recurse ./backend/* vlosada@instance-20240828-140606:/home/vlosada/first.e-pitinglish/backend/ --zone=us-central1-b
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      - '-r'
-      - './todo-list/*'
-      - 'vlosada@instance-20240828-140606:/home/vlosada/first.e-pitinglish/todo-list/'
-      - '--zone=us-central1-b'
+      - '-c'
+      - |
+        gcloud compute scp --recurse ./todo-list/* vlosada@instance-20240828-140606:/home/vlosada/first.e-pitinglish/todo-list/ --zone=us-central1-b
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
