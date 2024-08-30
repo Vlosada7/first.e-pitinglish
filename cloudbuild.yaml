@@ -1,0 +1,60 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute ssh vlosada@instance-20240828-140606 --command 'rm -rf /home/vlosada/first.e-pitinglish/backend/*'
+  - name: 'gcr.io/cloud-builders/scp'
+    args:
+      - '-r'
+      - './backend/*'
+      - 'vlosada@instance-20240828-140606:/home/vlosada/first.e-pitinglish/backend/'
+  - name: 'gcr.io/cloud-builders/scp'
+    args:
+      - '-r'
+      - './todo-list/*'
+      - 'vlosada@instance-20240828-140606:/home/vlosada/first.e-pitinglish/todo-list/'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute ssh vlosada@instance-20240828-140606 --command '
+          cd /home/vlosada/first.e-pitinglish/backend &&
+          npm install &&
+          npm run build &&
+          echo "Backend built successfully."
+        '
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute ssh vlosada@instance-20240828-140606 --command '
+          cd /home/vlosada/first.e-pitinglish/todo-list &&
+          npm install &&
+          npm run build &&
+          echo "Frontend built successfully."
+        '
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute ssh vlosada@instance-20240828-140606 --command '
+          pm2 restart backend || pm2 start /home/vlosada/first.e-pitinglish/backend/dist/src/index.js --name "backend" --watch &&
+          pm2 restart frontend || pm2 start npm --name "frontend" -- run start --prefix /home/vlosada/first.e-pitinglish/todo-list &&
+          pm2 save &&
+          echo "Backend and Frontend restarted successfully."
+        '
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute ssh vlosada@instance-20240828-140606 --command '
+          pm2 status &&
+          ls -l /home/vlosada/first.e-pitinglish/backend/dist/ &&
+          ls -l /home/vlosada/first.e-pitinglish/todo-list/build/
+        '
