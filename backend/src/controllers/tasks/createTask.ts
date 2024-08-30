@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const createTask = async (req: Request, res: Response) => {
-	const { title, description, datetime: dueDate, userId } = req.body;
+	const { title, description, dueDate, userId } = req.body;
 
 	try {
 		if (!userId) {
