@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 
 export const loginUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
-	console.log("Request received:", req.body);
 
 	try {
 		const user = await prisma.user.findUnique({

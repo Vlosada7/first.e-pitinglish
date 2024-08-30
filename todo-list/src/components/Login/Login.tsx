@@ -33,7 +33,7 @@ const Login: React.FC = () => {
 	};
 	return (
 		<div className="login-container">
-			<h1>ToDo List - Commit de teste 1</h1>
+			<h1>ToDo List</h1>
 			<p>Organiza tus tareas diarias de una forma sencilla y eficaz.</p>
 
 			{loading ? (

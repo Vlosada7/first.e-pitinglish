@@ -27,8 +27,6 @@ const getPublicIPAddress = async () => {
 	}
 };
 
-console.log("Teste do commit 1");
-
 app.listen(port, async () => {
 	const publicIPAddress = await getPublicIPAddress();
 	console.log(`Server is running on http://${publicIPAddress}:${port}`);
