@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 export const loginUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
+	console.log("Request received:", req.body);
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -29,6 +30,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 		return res.json({ message: "Login successful", token, user });
 	} catch (error) {
+		console.error("Login error:", error);
 		return res.status(500).json({ message: "Internal server error" });
 	}
 };
